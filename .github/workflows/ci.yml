@@ -36,10 +36,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - name: Checkout repository (with submodules)
+      - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
+
+      - name: Checkout Ghidra submodule at pinned commit
+        run: git submodule update --init --depth 1 third_party/ghidra
 
       - name: Set up Python
         uses: actions/setup-python@v5
