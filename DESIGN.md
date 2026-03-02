@@ -7,15 +7,19 @@ at runtime to decode instructions for each target ISA. These files are compiled
 from `.slaspec` source files using the `sleighc` compiler, which is itself built
 from Ghidra's C++ sources.
 
-The compiled `.sla` files for all Ghidra-supported processors total 100-200 MB.
-Bundling them inside any downstream package wheel would make it unacceptably large.
+Every downstream package that needs `.sla` files would otherwise have to either
+bundle them (adding ~26 MB of processor data to each wheel) or build them from
+source at install time (requiring a C++ toolchain). A dedicated, separately
+installable package solves both concerns: it keeps downstream wheels lean and
+provides a single, ready-to-use collection of pre-compiled `.sla` files that any
+tool can depend on.
 
 ## Solution: separate runtime-data package
 
 `ghidra-sleigh` is a standalone pip-installable package that:
 
 1. Builds the `sleighc` compiler from Ghidra C++ sources at build time.
-2. Compiles `.slaspec` files for the most important ISAs (x86, AArch64, RISC-V, MIPS — each in both 32- and 64-bit variants).
+2. Compiles `.slaspec` files for all 60+ Ghidra processor families by default (~26 MB). A lighter build (~10 MB) with only the major ISAs (x86, AArch64, ARM, RISC-V, MIPS) is available via a build option.
 3. Ships the compiled `.sla` plus supporting files (`.ldefs`, `.pspec`, `.cspec`)
    as Python package data.
 4. Exposes a single Python function `get_runtime_data_dir()` that returns the
@@ -70,7 +74,7 @@ Bundling them inside any downstream package wheel would make it unacceptably lar
 
 | Risk | Mitigation |
 |------|-----------|
-| Package size for all processors exceeds limits | Default build includes only priority ISAs (~30-80 MB); full build is opt-in |
+| Package size for all processors | Full build (~26 MB) is the default; a lighter build (~10 MB) with only major ISAs is opt-in via `-Dall_processors=false` |
 | `.sla` binary format changes between Ghidra versions | Package is pinned to one Ghidra version; format changes require new release |
 | Cross-processor `.cspec` references break isolated builds | DATA processor is always compiled first and included in every build |
 | Build requires C++ compiler and zlib | Documented in README |

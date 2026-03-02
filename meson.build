@@ -89,8 +89,11 @@ sleighc_exe = executable(
 )
 
 # ---------------------------------------------------------------------------
-# Compile .sla files for each priority processor.
+# Compile .sla files for each processor.
 # sleighc -a <processor_dir> compiles all .slaspec files recursively.
+#
+# By default all Ghidra-supported processors are compiled (~26 MB installed).
+# Set -Dall_processors=false to compile only the major ISAs (~10 MB).
 # ---------------------------------------------------------------------------
 python_prog = find_program('python3', 'python')
 sleigh_compile_script = files('scripts' / 'sleigh_compile.py')
@@ -98,7 +101,6 @@ sleigh_compile_script = files('scripts' / 'sleigh_compile.py')
 # DATA is required by other processors for shared cspec files.
 priority_processors = ['DATA', 'x86', 'AARCH64', 'RISCV', 'MIPS']
 
-# Optional: build all Ghidra-supported processors
 all_processors_opt = get_option('all_processors')
 
 if all_processors_opt

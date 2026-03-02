@@ -8,6 +8,6 @@ option(
 option(
   'all_processors',
   type: 'boolean',
-  value: false,
-  description: 'Compile .sla files for all Ghidra processors instead of only major ISAs.',
+  value: true,
+  description: 'Compile .sla files for all Ghidra processors. Set to false to compile only major ISAs (x86, AARCH64, ARM, RISCV, MIPS).',
 )

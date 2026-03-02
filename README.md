@@ -27,13 +27,12 @@ are hundreds of megabytes when compiled.
 
 `ghidra-sleigh` solves this by:
 
-- Compiling only the **most important ISAs** (x86, AArch64, ARM 32-bit, RISC-V, MIPS — plus
-  the shared DATA processor) that cover the vast majority of real-world binaries.
+- Compiling **all 60+ Ghidra processor families** by default (~26 MB), covering every ISA
+  Ghidra supports. A lighter build (~10 MB) with only the major ISAs is available via a
+  build option.
 - Exposing a **simple Python API** — one function call returns the path to the data directory.
 - Matching the **directory layout** expected by `SleighArchitecture::scanForSleighDirectories()`,
   so it plugs into any Ghidra-compatible consumer without adaptation.
-
-Support for additional ISAs is planned — see [Future plans](#future-plans).
 
 ---
 
@@ -47,6 +46,9 @@ Support for additional ISAs is planned — see [Future plans](#future-plans).
 
 ## Bundled processors
 
+By default **all 60+ Ghidra processor families** are compiled and included (~26 MB installed).
+The most commonly used processors are:
+
 | Processor | Architectures covered |
 |-----------|----------------------|
 | `DATA`    | Shared cspec / pspec definitions used by all processors |
@@ -56,8 +58,8 @@ Support for additional ISAs is planned — see [Future plans](#future-plans).
 | `RISCV`   | RISC-V 32-bit (RV32) and 64-bit (RV64) |
 | `MIPS`    | MIPS 32-bit and 64-bit, big- and little-endian |
 
-All other Ghidra processors (PowerPC, SPARC, …) can be compiled in by setting the
-`all_processors` build option — see [Building from source](#building-from-source).
+A lighter build (~10 MB) containing only these major ISAs can be produced by setting
+`all_processors` to `false` — see [Building from source](#building-from-source).
 
 ---
 
@@ -135,14 +137,14 @@ pip install .
 | Option | Default | Description |
 |--------|---------|-------------|
 | `ghidra_root` | `third_party/ghidra` | Path to the Ghidra source tree |
-| `all_processors` | `false` | Compile all 60+ Ghidra processor families instead of only the priority five |
+| `all_processors` | `true` | Compile all 60+ Ghidra processor families; set to `false` for a lighter build with only the major ISAs |
 
 ```bash
 # Point to an existing Ghidra checkout
 pip install --config-settings=setup-args="-Dghidra_root=/path/to/ghidra" .
 
-# Build with all processors
-pip install --config-settings=setup-args="-Dall_processors=true" .
+# Build with only the major ISAs (lighter, ~10 MB)
+pip install --config-settings=setup-args="-Dall_processors=false" .
 ```
 
 ---
@@ -202,12 +204,6 @@ in a Python package.
 
 - **Pre-built wheels** — Provide binary wheels for Linux (x86-64, aarch64), macOS (x86-64,
   arm64), and Windows so that `pip install ghidra-sleigh` never needs a C++ compiler.
-
-- **ISA packaging strategy** — Decide how to ship different ISA sets: a lightweight variant
-  (only the major ISAs: x86, AArch64, RISC-V, MIPS) vs a full variant (all 60+ Ghidra-supported
-  processor families). Options under consideration include pip extras
-  (`pip install ghidra-sleigh[light]` / `pip install ghidra-sleigh[full]`) and separate
-  packages (`ghidra-sleigh-light`, `ghidra-sleigh-full`).
 
 - **Custom processor support** — API for loading user-supplied `.slaspec` definitions alongside
   the bundled ones, enabling experimental or proprietary ISA support without forking the package.
