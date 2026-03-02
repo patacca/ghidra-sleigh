@@ -1,0 +1,153 @@
+project(
+  'ghidra-sleigh',
+  'cpp',
+  version: '12.0.3',
+  license: 'Apache-2.0',
+  meson_version: '>= 1.6',
+  default_options: [
+    'cpp_std=c++20',
+    'buildtype=release',
+    'warning_level=0',
+  ],
+)
+
+py = import('python').find_installation(pure: false)
+
+# ---------------------------------------------------------------------------
+# Path to the Ghidra upstream source tree.
+# Defaults to the bundled git submodule at third_party/ghidra.
+# Override with -Dghidra_root=/path/to/ghidra if you have an existing checkout.
+# ---------------------------------------------------------------------------
+ghidra_root = get_option('ghidra_root')
+# Source-relative path for source files and include_directories (Meson
+# resolves these against meson.current_source_dir() automatically).
+ghidra_src = ghidra_root / 'Ghidra' / 'Features' / 'Decompiler' / 'src' / 'decompile' / 'cpp'
+
+# Absolute path for custom_target commands that run from the build directory.
+fs = import('fs')
+if fs.is_absolute(ghidra_root)
+  ghidra_root_abs = ghidra_root
+else
+  ghidra_root_abs = meson.current_source_dir() / ghidra_root
+endif
+processors_root = ghidra_root_abs / 'Ghidra' / 'Processors'
+
+ghidra_inc = include_directories(ghidra_src)
+zlib_dep = dependency('zlib')
+
+# ---------------------------------------------------------------------------
+# sleighc -- the Sleigh specification compiler
+# Sources: CORE + SLEIGH + SLACOMP (from upstream Makefile)
+# ---------------------------------------------------------------------------
+sleighc_sources = [
+  # CORE
+  ghidra_src / 'xml.cc',
+  ghidra_src / 'marshal.cc',
+  ghidra_src / 'space.cc',
+  ghidra_src / 'float.cc',
+  ghidra_src / 'address.cc',
+  ghidra_src / 'pcoderaw.cc',
+  ghidra_src / 'translate.cc',
+  ghidra_src / 'opcodes.cc',
+  ghidra_src / 'globalcontext.cc',
+  # SLEIGH
+  ghidra_src / 'sleigh.cc',
+  ghidra_src / 'pcodeparse.cc',
+  ghidra_src / 'pcodecompile.cc',
+  ghidra_src / 'sleighbase.cc',
+  ghidra_src / 'slghsymbol.cc',
+  ghidra_src / 'slghpatexpress.cc',
+  ghidra_src / 'slghpattern.cc',
+  ghidra_src / 'semantics.cc',
+  ghidra_src / 'context.cc',
+  ghidra_src / 'slaformat.cc',
+  ghidra_src / 'compression.cc',
+  ghidra_src / 'filemanage.cc',
+  # SLEIGH extras needed by compiler
+  ghidra_src / 'loadimage.cc',
+  ghidra_src / 'memstate.cc',
+  ghidra_src / 'opbehavior.cc',
+  # SLACOMP (the compiler itself; contains main())
+  ghidra_src / 'slgh_compile.cc',
+  ghidra_src / 'slghparse.cc',
+  ghidra_src / 'slghscan.cc',
+]
+
+sleighc_exe = executable(
+  'sleighc',
+  sleighc_sources,
+  include_directories: ghidra_inc,
+  dependencies: zlib_dep,
+  native: true,
+)
+
+# ---------------------------------------------------------------------------
+# Compile .sla files for each priority processor.
+# sleighc -a <processor_dir> compiles all .slaspec files recursively.
+# ---------------------------------------------------------------------------
+python_prog = find_program('python3', 'python')
+sleigh_compile_script = files('scripts' / 'sleigh_compile.py')
+
+# Priority processors matching ADR-009 fixture coverage:
+#   x86 (32+64), AARCH64, RISCV (riscv64), MIPS (mips32)
+# DATA is required by other processors for shared cspec files.
+priority_processors = ['DATA', 'x86', 'AARCH64', 'RISCV', 'MIPS']
+
+# Optional: build all Ghidra-supported processors
+all_processors_opt = get_option('all_processors')
+
+if all_processors_opt
+  # Discover all processor directories at configure time
+  proc_scan = run_command(
+    python_prog,
+    '-c',
+    'import os, sys; root = sys.argv[1]; dirs = sorted(d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d))); print("\\n".join(dirs))',
+    processors_root,
+    check: true,
+  )
+  processors = proc_scan.stdout().strip().split('\n')
+else
+  processors = priority_processors
+endif
+
+sleigh_stamps = []
+foreach proc : processors
+  proc = proc.strip()
+  if proc == ''
+    continue
+  endif
+  stamp = custom_target(
+    'sleigh-' + proc,
+    command: [python_prog, sleigh_compile_script, sleighc_exe, processors_root / proc, '@OUTPUT@'],
+    output: 'sleigh-' + proc + '.stamp',
+    build_by_default: true,
+  )
+  sleigh_stamps += stamp
+endforeach
+
+# ---------------------------------------------------------------------------
+# Install runtime data files (.sla, .ldefs, .pspec, .cspec) into the
+# Python package data directory.
+#
+# Installed layout (relative to site-packages):
+#   ghidra_sleigh/data/Ghidra/Processors/<PROC>/data/languages/<files>
+#
+# This matches the directory structure that SleighArchitecture::
+# scanForSleighDirectories() expects when given the .../data path as root.
+# ---------------------------------------------------------------------------
+runtime_extensions = ['*.sla', '*.ldefs', '*.pspec', '*.cspec']
+
+foreach proc : processors
+  proc = proc.strip()
+  if proc == ''
+    continue
+  endif
+  install_subdir(
+    processors_root / proc / 'data' / 'languages',
+    install_dir: py.get_install_dir() / 'ghidra_sleigh' / 'data' / 'Ghidra' / 'Processors' / proc / 'data',
+    # install_subdir includes all files; we exclude non-runtime files below.
+    exclude_files: [],
+  )
+endforeach
+
+subdir('src' / 'ghidra_sleigh')

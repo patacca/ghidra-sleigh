@@ -1,0 +1,29 @@
+[build-system]
+requires = ["meson-python>=0.17", "meson>=1.6"]
+build-backend = "mesonpy"
+
+[project]
+name = "ghidra-sleigh"
+version = "12.0.3"
+description = "Pre-compiled Sleigh runtime data from Ghidra, ready to be used"
+license = "Apache-2.0"
+requires-python = ">=3.13"
+readme = "README.md"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Security",
+    "Topic :: Software Development :: Disassemblers",
+]
+
+[project.urls]
+Repository = "https://github.com/patacca/ghidra-sleigh"
+Issues = "https://github.com/patacca/ghidra-sleigh/issues"
+Changelog = "https://github.com/patacca/ghidra-sleigh/releases"
+
+[tool.meson-python]
+# Allow the build to modify sources (sleighc writes .sla next to .slaspec).
+limited-api = false

@@ -1,0 +1,13 @@
+option(
+  'ghidra_root',
+  type: 'string',
+  value: '../third_party/ghidra',
+  description: 'Path to the Ghidra source tree root (containing Ghidra/Processors and Ghidra/Features).',
+)
+
+option(
+  'all_processors',
+  type: 'boolean',
+  value: false,
+  description: 'Compile .sla files for all Ghidra processors instead of only priority ISAs.',
+)
