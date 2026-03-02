@@ -15,7 +15,7 @@ Bundling them inside the main `flatline` wheel would make it unacceptably large.
 `ghidra-sleigh` is a standalone pip-installable package that:
 
 1. Builds the `sleighc` compiler from Ghidra C++ sources at build time.
-2. Compiles `.slaspec` files for priority ISAs (x86, AARCH64, RISCV, MIPS).
+2. Compiles `.slaspec` files for the most important ISAs (x86, AArch64, RISC-V, MIPS — each in both 32- and 64-bit variants).
 3. Ships the compiled `.sla` plus supporting files (`.ldefs`, `.pspec`, `.cspec`)
    as Python package data.
 4. Exposes a single Python function `get_runtime_data_dir()` that returns the
@@ -150,6 +150,19 @@ This decision is tracked for post-MVP evaluation.
 |--------|------|---------|-------------|
 | `ghidra_root` | string | `../third_party/ghidra` | Path to Ghidra source tree |
 | `all_processors` | boolean | `false` | Compile all processors (not just priority) |
+
+## ISA packaging strategy (planned)
+
+The current default build includes only the most important ISAs (x86, AArch64, RISC-V, MIPS).
+A decision is pending on how to expose different coverage levels to consumers:
+
+- **pip extras** — `pip install ghidra-sleigh[light]` (major ISAs only) vs
+  `pip install ghidra-sleigh[full]` (all 60+ Ghidra processors).
+- **Separate packages** — `ghidra-sleigh-light` and `ghidra-sleigh-full` as independent
+  distributions.
+
+The choice depends on how well pip extras integrate with binary wheel selection and how large
+the full-processor data set grows per platform.
 
 ## Versioning strategy
 

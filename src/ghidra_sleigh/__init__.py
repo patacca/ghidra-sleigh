@@ -1,8 +1,9 @@
 """Compiled Sleigh runtime data for the Ghidra decompiler.
 
 This package bundles pre-compiled ``.sla`` files and associated language
-definitions (``.ldefs``, ``.pspec``, ``.cspec``) for priority ISAs
-supported by the Ghidra decompiler.
+definitions (``.ldefs``, ``.pspec``, ``.cspec``) for the most important
+ISAs supported by the Ghidra decompiler (x86, AArch64, RISC-V, MIPS —
+each in both 32- and 64-bit variants — plus the shared DATA processor).
 
 Public API
 ----------
