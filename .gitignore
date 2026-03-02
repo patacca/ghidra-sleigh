@@ -22,6 +22,12 @@ _build/
 .coverage
 htmlcov/
 
+# ruff
+.ruff_cache/
+
+# tox
+.tox/
+
 # IDE and editor files
 .vscode/
 .idea/

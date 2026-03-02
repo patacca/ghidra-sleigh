@@ -114,7 +114,7 @@ bundled language definitions automatically.
 
 The build requires:
 
-- Python ≥ 3.13
+- Minimum supported Python version: 3.13+
 - Meson ≥ 1.6
 - A C++11 compiler.
     - **GCC ≥ 4.8**, **Clang ≥ 3.3**, or **MSVC ≥ 19.0** (Visual Studio 2015).
@@ -157,30 +157,23 @@ python -m venv venv
 pip install -e ".[dev]"
 ```
 
-Run checks directly:
+Run checks via `tox`:
 
 ```bash
-# Lint
-ruff check src/ scripts/ tests/
-
-# Format check
-ruff format --check src/ scripts/ tests/
-
-# Tests
-pytest
-```
-
-Run all environments through `tox`:
-
-```bash
+# Run all environments
 tox
+
+# Run one environment
+tox -e lint
+tox -e format
+tox -e py
 ```
 
 The configured `tox` environments are:
 
-- `lint` -> `ruff check`
-- `format` -> `ruff format --check`
-- `py` -> `pytest` (active interpreter)
+- `lint`: lint checks
+- `format`: formatting checks
+- `py`: tests (active interpreter)
 
 ---
 
