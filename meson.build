@@ -5,7 +5,7 @@ project(
   license: 'Apache-2.0',
   meson_version: '>= 1.6',
   default_options: [
-    'cpp_std=c++20',
+    'cpp_std=c++11',
     'buildtype=release',
     'warning_level=0',
   ],
@@ -63,10 +63,6 @@ sleighc_sources = [
   ghidra_src / 'slaformat.cc',
   ghidra_src / 'compression.cc',
   ghidra_src / 'filemanage.cc',
-  # SLEIGH extras needed by compiler
-  ghidra_src / 'loadimage.cc',
-  ghidra_src / 'memstate.cc',
-  ghidra_src / 'opbehavior.cc',
   # SLACOMP (the compiler itself; contains main())
   ghidra_src / 'slgh_compile.cc',
   ghidra_src / 'slghparse.cc',
@@ -88,8 +84,6 @@ sleighc_exe = executable(
 python_prog = find_program('python3', 'python')
 sleigh_compile_script = files('scripts' / 'sleigh_compile.py')
 
-# Priority processors matching ADR-009 fixture coverage:
-#   x86 (32+64), AARCH64, RISCV (riscv64), MIPS (mips32)
 # DATA is required by other processors for shared cspec files.
 priority_processors = ['DATA', 'x86', 'AARCH64', 'RISCV', 'MIPS']
 
@@ -135,8 +129,6 @@ endforeach
 # This matches the directory structure that SleighArchitecture::
 # scanForSleighDirectories() expects when given the .../data path as root.
 # ---------------------------------------------------------------------------
-runtime_extensions = ['*.sla', '*.ldefs', '*.pspec', '*.cspec']
-
 foreach proc : processors
   proc = proc.strip()
   if proc == ''
@@ -145,7 +137,6 @@ foreach proc : processors
   install_subdir(
     processors_root / proc / 'data' / 'languages',
     install_dir: py.get_install_dir() / 'ghidra_sleigh' / 'data' / 'Ghidra' / 'Processors' / proc / 'data',
-    # install_subdir includes all files; we exclude non-runtime files below.
     exclude_files: [],
   )
 endforeach

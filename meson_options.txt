@@ -9,5 +9,5 @@ option(
   'all_processors',
   type: 'boolean',
   value: false,
-  description: 'Compile .sla files for all Ghidra processors instead of only priority ISAs.',
+  description: 'Compile .sla files for all Ghidra processors instead of only major ISAs.',
 )

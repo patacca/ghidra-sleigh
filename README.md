@@ -64,6 +64,8 @@ All other Ghidra processors (PowerPC, SPARC, …) can be compiled in by setting 
 ## Installation
 
 ```bash
+python -m venv venv
+. venv/bin/activate
 pip install ghidra-sleigh
 ```
 
@@ -123,6 +125,8 @@ The build requires:
 git clone --recurse-submodules https://github.com/patacca/ghidra-sleigh
 cd ghidra-sleigh
 
+python -m venv venv
+. venv/bin/activate
 pip install .
 ```
 
