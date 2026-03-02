@@ -209,9 +209,6 @@ in a Python package.
   (`pip install ghidra-sleigh[light]` / `pip install ghidra-sleigh[full]`) and separate
   packages (`ghidra-sleigh-light`, `ghidra-sleigh-full`).
 
-- **Broader ISA coverage** — Support for additional processor families such as PowerPC,
-  SPARC, and others, either as part of the default build or as optional extras.
-
 - **Custom processor support** — API for loading user-supplied `.slaspec` definitions alongside
   the bundled ones, enabling experimental or proprietary ISA support without forking the package.
 
