@@ -8,6 +8,7 @@ Invokes ``sleighc -a <processor-dir>`` which recursively finds every
 ``.slaspec`` file and compiles it to a ``.sla`` alongside the source.
 On success a stamp file is written so Meson can track the dependency.
 """
+
 from __future__ import annotations
 
 import pathlib

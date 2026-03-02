@@ -147,6 +147,43 @@ pip install --config-settings=setup-args="-Dall_processors=true" .
 
 ---
 
+## Development
+
+Install development tooling:
+
+```bash
+python -m venv venv
+. venv/bin/activate
+pip install -e ".[dev]"
+```
+
+Run checks directly:
+
+```bash
+# Lint
+ruff check src/ scripts/ tests/
+
+# Format check
+ruff format --check src/ scripts/ tests/
+
+# Tests
+pytest
+```
+
+Run all environments through `tox`:
+
+```bash
+tox
+```
+
+The configured `tox` environments are:
+
+- `lint` -> `ruff check`
+- `format` -> `ruff format --check`
+- `py` -> `pytest` (active interpreter)
+
+---
+
 ## Versioning
 
 Each release of `ghidra-sleigh` is pinned to exactly one Ghidra upstream revision. The package

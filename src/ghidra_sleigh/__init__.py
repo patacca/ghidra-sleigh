@@ -25,12 +25,18 @@ from __future__ import annotations
 import importlib.resources
 import pathlib
 
-from ghidra_sleigh._version import (
-    GHIDRA_COMMIT,
-    GHIDRA_TAG,
-    PROCESSORS,
-    __version__,
-)
+try:
+    from ghidra_sleigh._version import (
+        GHIDRA_COMMIT,
+        GHIDRA_TAG,
+        PROCESSORS,
+        __version__,
+    )
+except ModuleNotFoundError:  # pragma: no cover - build-time generated in releases.
+    GHIDRA_COMMIT = "unknown"
+    GHIDRA_TAG = "unknown"
+    PROCESSORS: tuple[str, ...] = ()
+    __version__ = "0.0.0.dev0"
 
 __all__ = [
     "GHIDRA_COMMIT",

@@ -18,10 +18,10 @@ pinned to an exact tag:
 
 from __future__ import annotations
 
+import pathlib
 import re
 import subprocess
 import sys
-import pathlib
 
 _PROJECT_ROOT = pathlib.Path(__file__).parent.parent
 _GHIDRA_DIR = _PROJECT_ROOT / "third_party" / "ghidra"
