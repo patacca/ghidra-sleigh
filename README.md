@@ -20,15 +20,15 @@ The package version **exactly tracks the upstream Ghidra release tag** it was co
 
 ## Why this exists
 
-Projects that need Sleigh data (e.g. a binary lifter or a decompiler library) typically have to
-either vendor the entire Ghidra tree or ask users to install Ghidra manually. Both options are
-heavy — the raw processor definitions alone are hundreds of megabytes when compiled.
+Projects that need Sleigh data — such as [`flatline`](https://github.com/patacca/flatline), a
+binary lifter and decompiler — typically have to either vendor the entire Ghidra tree or ask
+users to install Ghidra manually. Both options are heavy — the raw processor definitions alone
+are hundreds of megabytes when compiled.
 
 `ghidra-sleigh` solves this by:
 
-- Compiling only the **most important ISAs** (x86, AArch64, RISC-V, MIPS — each in both 32-
-  and 64-bit variants — plus the shared DATA processor) that cover the vast majority of
-  real-world binaries.
+- Compiling only the **most important ISAs** (x86, AArch64, ARM 32-bit, RISC-V, MIPS — plus
+  the shared DATA processor) that cover the vast majority of real-world binaries.
 - Exposing a **simple Python API** — one function call returns the path to the data directory.
 - Matching the **directory layout** expected by `SleighArchitecture::scanForSleighDirectories()`,
   so it plugs into any Ghidra-compatible consumer without adaptation.
@@ -52,10 +52,11 @@ Support for additional ISAs is planned — see [Future plans](#future-plans).
 | `DATA`    | Shared cspec / pspec definitions used by all processors |
 | `x86`     | x86 16-bit, 32-bit (IA-32), 64-bit (x86-64) |
 | `AARCH64` | ARM 64-bit (AArch64 / A64 instruction set) |
+| `ARM`     | ARM 32-bit (A32 / Thumb instruction sets) |
 | `RISCV`   | RISC-V 32-bit (RV32) and 64-bit (RV64) |
 | `MIPS`    | MIPS 32-bit and 64-bit, big- and little-endian |
 
-All other Ghidra processors (ARM 32-bit, PowerPC, SPARC, …) can be compiled in by setting the
+All other Ghidra processors (PowerPC, SPARC, …) can be compiled in by setting the
 `all_processors` build option — see [Building from source](#building-from-source).
 
 ---
@@ -85,7 +86,7 @@ print(ghidra_sleigh.GHIDRA_TAG)     # "Ghidra_12.0.3_build"
 print(ghidra_sleigh.GHIDRA_COMMIT)  # "09f14c92d3da6e5d5f6b7dea115409719db3cce1"
 
 # Tuple of processor names whose .sla files are included.
-print(ghidra_sleigh.PROCESSORS)     # ("DATA", "x86", "AARCH64", "RISCV", "MIPS")
+print(ghidra_sleigh.PROCESSORS)     # ("DATA", "x86", "AARCH64", "ARM", "RISCV", "MIPS")
 ```
 
 The `data_dir` is structured exactly as `SleighArchitecture::scanForSleighDirectories()` expects:
@@ -97,6 +98,7 @@ data/
         ├── DATA/data/languages/    ← .cspec / .pspec
         ├── x86/data/languages/     ← .sla / .ldefs / .pspec / .cspec
         ├── AARCH64/data/languages/
+        ├── ARM/data/languages/
         ├── RISCV/data/languages/
         └── MIPS/data/languages/
 ```
@@ -112,9 +114,8 @@ The build requires:
 
 - Python ≥ 3.13
 - Meson ≥ 1.6
-- A C++20 compiler. C++20 has been broadly supported since 2021 and is available in all major
-  current toolchains: **GCC ≥ 11** (released May 2021), **Clang ≥ 14** (released March 2022),
-  or **MSVC ≥ 19.29** (Visual Studio 2022).
+- A C++11 compiler.
+    - **GCC ≥ 4.8**, **Clang ≥ 3.3**, or **MSVC ≥ 19.0** (Visual Studio 2015).
 - zlib development headers
 
 ```bash
@@ -129,7 +130,7 @@ pip install .
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `ghidra_root` | `../third_party/ghidra` | Path to the Ghidra source tree |
+| `ghidra_root` | `third_party/ghidra` | Path to the Ghidra source tree |
 | `all_processors` | `false` | Compile all 60+ Ghidra processor families instead of only the priority five |
 
 ```bash
@@ -174,9 +175,8 @@ in a Python package.
   (`pip install ghidra-sleigh[light]` / `pip install ghidra-sleigh[full]`) and separate
   packages (`ghidra-sleigh-light`, `ghidra-sleigh-full`).
 
-- **Broader ISA coverage** — Support for additional processor families such as ARM 32-bit
-  (Thumb / A32), PowerPC, SPARC, and others, either as part of the default build or as
-  optional extras.
+- **Broader ISA coverage** — Support for additional processor families such as PowerPC,
+  SPARC, and others, either as part of the default build or as optional extras.
 
 - **Custom processor support** — API for loading user-supplied `.slaspec` definitions alongside
   the bundled ones, enabling experimental or proprietary ISA support without forking the package.

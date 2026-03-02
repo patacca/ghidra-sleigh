@@ -1,7 +1,7 @@
 option(
   'ghidra_root',
   type: 'string',
-  value: '../third_party/ghidra',
+  value: 'third_party/ghidra',
   description: 'Path to the Ghidra source tree root (containing Ghidra/Processors and Ghidra/Features).',
 )
 
