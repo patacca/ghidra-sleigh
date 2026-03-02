@@ -1,7 +1,15 @@
+# ---------------------------------------------------------------------------
+# Derive the project version and Ghidra metadata from the git submodule.
+# The helper script reads `git describe --tags --exact-match` and
+# `git rev-parse HEAD` inside third_party/ghidra and falls back gracefully
+# when git is unavailable or the submodule is not at an exact tag.
+# ---------------------------------------------------------------------------
+_info_script = files('scripts/get_ghidra_info.py')
+
 project(
   'ghidra-sleigh',
   'cpp',
-  version: '12.0.3',
+  version: run_command('python3', _info_script, 'version', check: false).stdout().strip(),
   license: 'Apache-2.0',
   meson_version: '>= 1.6',
   default_options: [
@@ -10,6 +18,9 @@ project(
     'warning_level=0',
   ],
 )
+
+ghidra_tag    = run_command('python3', _info_script, 'tag',    check: false).stdout().strip()
+ghidra_commit = run_command('python3', _info_script, 'commit', check: false).stdout().strip()
 
 py = import('python').find_installation(pure: false)
 

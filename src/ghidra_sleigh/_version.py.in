@@ -1,0 +1,15 @@
+"""Version and upstream pin constants for ghidra-sleigh.
+
+This file is generated at build time by Meson from _version.py.in.
+Do not edit it manually — edit the template instead.
+"""
+from __future__ import annotations
+
+__version__ = "@VERSION@"
+
+# Must match the pinned upstream baseline.
+GHIDRA_TAG: str = "@GHIDRA_TAG@"
+GHIDRA_COMMIT: str = "@GHIDRA_COMMIT@"
+
+# Processor families compiled and shipped in this package.
+PROCESSORS: tuple[str, ...] = (@PROCESSORS@)

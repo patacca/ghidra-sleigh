@@ -2,15 +2,13 @@
 
 This package bundles pre-compiled ``.sla`` files and associated language
 definitions (``.ldefs``, ``.pspec``, ``.cspec``) for the most important
-ISAs supported by the Ghidra decompiler (x86, AArch64, RISC-V, MIPS —
-each in both 32- and 64-bit variants — plus the shared DATA processor).
+ISAs supported by the Ghidra decompiler (x86, AArch64, RISC-V, MIPS --
+each in both 32- and 64-bit variants -- plus the shared DATA processor).
 
 Public API
 ----------
-get_runtime_data_dir() -> str
+get_runtime_data_dir() -> pathlib.Path
     Return the absolute filesystem path to the runtime data root.
-    This path can be passed directly as ``runtime_data_dir`` to
-    ``flatline.DecompilerSession`` or ``flatline.decompile_function``.
 
 GHIDRA_TAG : str
     The Ghidra release tag these assets were compiled from.
@@ -21,6 +19,7 @@ GHIDRA_COMMIT : str
 PROCESSORS : tuple[str, ...]
     Processor families included in this build.
 """
+
 from __future__ import annotations
 
 import importlib.resources
@@ -42,7 +41,7 @@ __all__ = [
 ]
 
 
-def get_runtime_data_dir() -> str:
+def get_runtime_data_dir() -> pathlib.Path:
     """Return the absolute path to the bundled runtime data root.
 
     The returned directory follows the Ghidra ``Processors/*/data/languages``
@@ -55,4 +54,4 @@ def get_runtime_data_dir() -> str:
     if not resolved.is_dir():
         msg = f"ghidra-sleigh runtime data directory missing: {resolved}"
         raise RuntimeError(msg)
-    return str(resolved)
+    return resolved

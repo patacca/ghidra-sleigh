@@ -4,7 +4,7 @@ build-backend = "mesonpy"
 
 [project]
 name = "ghidra-sleigh"
-version = "12.0.3"
+dynamic = ["version"]
 description = "Pre-compiled Sleigh runtime data from Ghidra, packaged as a Python library."
 license = "Apache-2.0"
 requires-python = ">=3.13"
