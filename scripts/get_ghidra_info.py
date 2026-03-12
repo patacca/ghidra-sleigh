@@ -18,6 +18,7 @@ pinned to an exact tag:
 
 from __future__ import annotations
 
+import os
 import pathlib
 import re
 import subprocess
@@ -57,7 +58,9 @@ def get_version(tag: str | None = None) -> str:
     if tag is None:
         tag = get_tag()
     m = _TAG_RE.match(tag)
-    return m.group(1) if m else _FALLBACK_VERSION
+    version = m.group(1) if m else _FALLBACK_VERSION
+    suffix = os.environ.get("GHIDRA_SLEIGH_VERSION_SUFFIX", "")
+    return version + suffix
 
 
 def main() -> None:
