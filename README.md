@@ -23,7 +23,7 @@ for example, `12.0.3` means the files were compiled from
 Projects that need Sleigh data — such as [`flatline`](https://github.com/patacca/flatline), a
 binary lifter and decompiler — typically have to either vendor the entire Ghidra tree or ask
 users to install Ghidra manually. Both options are heavy — the raw processor definitions alone
-are hundreds of megabytes when compiled.
+are tens of megabytes when compiled.
 
 `ghidra-sleigh` solves this by:
 
