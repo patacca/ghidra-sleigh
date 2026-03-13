@@ -2,15 +2,8 @@
 
 from __future__ import annotations
 
-import sys
-from pathlib import Path
-
+import get_ghidra_info
 import pytest
-
-# Make the scripts directory importable.
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
-
-import get_ghidra_info  # noqa: E402
 
 
 class TestTagRegex:

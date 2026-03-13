@@ -45,7 +45,7 @@ no_package = true
 [tool.tox.env_run_base]
 skip_install = true
 deps = ["pytest"]
-set_env = { PYTHONPATH = "{tox_root}/src" }
+set_env = { PYTHONPATH = "{tox_root}/src:{tox_root}/scripts" }
 commands = [["pytest"]]
 
 [tool.tox.env.lint]

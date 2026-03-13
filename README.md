@@ -13,7 +13,7 @@ binary analysis frameworks — can load them immediately. No Ghidra installation
 build step at runtime, no Java.
 
 The package version **exactly tracks the upstream Ghidra release tag** it was compiled from:
-`12.0.3` here means the files were compiled from
+for example, `12.0.3` means the files were compiled from
 [`Ghidra_12.0.3_build`](https://github.com/NationalSecurityAgency/ghidra/releases/tag/Ghidra_12.0.3_build).
 
 ---
@@ -40,7 +40,7 @@ are hundreds of megabytes when compiled.
 
 | ghidra-sleigh | Ghidra tag | Ghidra commit | ghidra-sleigh commit |
 |---------------|------------|---------------|----------------------|
-| 12.0.3 | [`Ghidra_12.0.3_build`](https://github.com/NationalSecurityAgency/ghidra/releases/tag/Ghidra_12.0.3_build) | `09f14c92d3da6e5d5f6b7dea115409719db3cce1` | `0717447b1d92ecf964ccccdc7069bff80db9ad43` |
+| 12.0.4 | [`Ghidra_12.0.4_build`](https://github.com/NationalSecurityAgency/ghidra/releases/tag/Ghidra_12.0.4_build) | `e40ed13014025f82488b1f8f7bca566894ac376b` | `e1cd442` |
 
 ---
 
@@ -86,8 +86,8 @@ data_dir = ghidra_sleigh.get_runtime_data_dir()
 # → /path/to/site-packages/ghidra_sleigh/data
 
 # Upstream Ghidra tag this package was compiled from.
-print(ghidra_sleigh.GHIDRA_TAG)     # "Ghidra_12.0.3_build"
-print(ghidra_sleigh.GHIDRA_COMMIT)  # "09f14c92d3da6e5d5f6b7dea115409719db3cce1"
+print(ghidra_sleigh.GHIDRA_TAG)     # "Ghidra_12.0.4_build"
+print(ghidra_sleigh.GHIDRA_COMMIT)  # "e40ed13014025f82488b1f8f7bca566894ac376b"
 
 # Tuple of processor names whose .sla files are included.
 print(ghidra_sleigh.PROCESSORS)     # ("DATA", "x86", "AARCH64", "ARM", "RISCV", "MIPS")

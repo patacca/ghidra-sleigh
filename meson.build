@@ -152,7 +152,6 @@ foreach proc : processors
   install_subdir(
     processors_root / proc / 'data' / 'languages',
     install_dir: py.get_install_dir() / 'ghidra_sleigh' / 'data' / 'Ghidra' / 'Processors' / proc / 'data',
-    exclude_files: [],
   )
 endforeach
 
