@@ -202,9 +202,6 @@ in a Python package.
   tags and publishes a matching `ghidra-sleigh` version automatically, keeping the package in
   sync with upstream without manual intervention.
 
-- **Pre-built wheels** — Provide binary wheels for Linux (x86-64, aarch64), macOS (x86-64,
-  arm64), and Windows so that `pip install ghidra-sleigh` never needs a C++ compiler.
-
 - **Custom processor support** — API for loading user-supplied `.slaspec` definitions alongside
   the bundled ones, enabling experimental or proprietary ISA support without forking the package.
 
