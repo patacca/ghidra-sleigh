@@ -22,6 +22,8 @@ _info_script = files('scripts/get_ghidra_info.py')
 ghidra_tag    = run_command('python3', _info_script, 'tag',    check: false).stdout().strip()
 ghidra_commit = run_command('python3', _info_script, 'commit', check: false).stdout().strip()
 
+meson.add_dist_script(files('scripts/dist_ghidra.py'))
+
 py = import('python').find_installation(pure: true)
 
 # ---------------------------------------------------------------------------

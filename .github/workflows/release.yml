@@ -43,6 +43,12 @@ jobs:
         env:
           GHIDRA_SLEIGH_VERSION_SUFFIX: ${{ github.event_name == 'workflow_dispatch' && format('.dev{0}', github.run_number) || '' }}
 
+      - name: Build sdist
+        run: |
+          python -m build --sdist --outdir dist
+        env:
+          GHIDRA_SLEIGH_VERSION_SUFFIX: ${{ github.event_name == 'workflow_dispatch' && format('.dev{0}', github.run_number) || '' }}
+
       - name: Validate distribution artifacts
         run: |
           twine check dist/*

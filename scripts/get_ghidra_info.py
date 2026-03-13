@@ -23,6 +23,7 @@ import pathlib
 import re
 import subprocess
 import sys
+from functools import cache
 
 _PROJECT_ROOT = pathlib.Path(__file__).parent.parent
 _GHIDRA_DIR = _PROJECT_ROOT / "third_party" / "ghidra"
@@ -32,6 +33,20 @@ _FALLBACK_TAG = "unknown"
 _FALLBACK_COMMIT = "unknown"
 
 _TAG_RE = re.compile(r"^Ghidra_(.+)_build$")
+
+
+@cache
+def _read_ghidra_info() -> dict[str, str]:
+    """Read GHIDRA_INFO file if it exists (sdist fallback)."""
+    info_file = _GHIDRA_DIR / "GHIDRA_INFO"
+    if not info_file.is_file():
+        return {}
+    info = {}
+    for line in info_file.read_text().splitlines():
+        if "=" in line:
+            key, value = line.split("=", 1)
+            info[key.strip()] = value.strip()
+    return info
 
 
 def _git(*args: str) -> str:
@@ -47,10 +62,16 @@ def _git(*args: str) -> str:
 
 
 def get_tag() -> str:
+    tag = _read_ghidra_info().get("tag")
+    if tag:
+        return tag
     return _git("describe", "--tags", "--exact-match", "HEAD") or _FALLBACK_TAG
 
 
 def get_commit() -> str:
+    commit = _read_ghidra_info().get("commit")
+    if commit:
+        return commit
     return _git("rev-parse", "HEAD") or _FALLBACK_COMMIT
 
 
