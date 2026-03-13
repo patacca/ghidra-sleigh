@@ -22,7 +22,7 @@ _info_script = files('scripts/get_ghidra_info.py')
 ghidra_tag    = run_command('python3', _info_script, 'tag',    check: false).stdout().strip()
 ghidra_commit = run_command('python3', _info_script, 'commit', check: false).stdout().strip()
 
-py = import('python').find_installation(pure: false)
+py = import('python').find_installation(pure: true)
 
 # ---------------------------------------------------------------------------
 # Path to the Ghidra upstream source tree.

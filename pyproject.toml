@@ -27,8 +27,6 @@ Changelog = "https://github.com/patacca/ghidra-sleigh/releases"
 dev = ["ruff", "pytest", "tox"]
 
 [tool.meson-python]
-# Allow the build to modify sources (sleighc writes .sla next to .slaspec).
-limited-api = false
 
 [tool.ruff]
 target-version = "py313"
